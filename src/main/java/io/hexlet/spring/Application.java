@@ -26,6 +26,7 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
+@RequestMapping("/api/posts")
 public class Application {
     // Хранилище добавленных СТРАНИЦ, то есть обычный список
     // private List<Page> pages = new ArrayList<Page>();
@@ -89,7 +90,7 @@ public class Application {
 
     // ---- POSTS ----
 
-    @GetMapping("/posts")
+    @GetMapping()
     public ResponseEntity<List<Post>> index(
             @RequestParam(defaultValue = "10") Integer limit,
             @RequestParam(defaultValue = "1") Integer page) {
@@ -99,7 +100,7 @@ public class Application {
         return ResponseEntity.status(200).body(result);
     }
 
-    @GetMapping("/posts/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Post> show(@PathVariable String id) {
         var post = posts.stream()
                 .filter(p -> p.getTitle().equals(id))
@@ -112,14 +113,14 @@ public class Application {
         }
     }
 
-    @PostMapping("/posts")
+    @PostMapping("")
     public ResponseEntity<Post> create(@Valid @RequestBody Post post) {
         posts.add(post);
 
         return ResponseEntity.status(201).body(post);
     }
 
-    @PutMapping("/posts/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Post> update(@PathVariable String id, @Valid @RequestBody Post data) {
         var maybePost = posts.stream()
                 .filter(p -> p.getTitle().equals(id))
@@ -138,7 +139,7 @@ public class Application {
         }
     }
 
-    @DeleteMapping("/posts/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         boolean removed = posts.removeIf(p -> p.getTitle().equals(id));
 
