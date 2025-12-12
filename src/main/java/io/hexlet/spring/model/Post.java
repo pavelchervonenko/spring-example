@@ -1,23 +1,31 @@
 package io.hexlet.spring.model;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
-import jakarta.validation.constraints.NotBlank;
-
+@Entity
+@Table(name = "posts")
 @NoArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Post {
-    @NotBlank(message = "Title must not be blank")
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long id;
+
     private String title;
-
-    @NotBlank(message = "Content must not be blank")
     private String content;
-
-    private String author;
-    private LocalDateTime createdAt;
+    private boolean published;
 }

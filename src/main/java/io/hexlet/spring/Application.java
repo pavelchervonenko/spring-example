@@ -26,13 +26,13 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/api/posts")
+//@RequestMapping("/api/posts")
 public class Application {
     // Хранилище добавленных СТРАНИЦ, то есть обычный список
     // private List<Page> pages = new ArrayList<Page>();
 
     // Хранилище добавленных ПОСТОВ
-    private List<Post> posts = new ArrayList<>();
+    // private List<Post> posts = new ArrayList<>();
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -88,65 +88,65 @@ public class Application {
 //        pages.removeIf(p -> p.getSlug().equals(id));
 //    }
 
-    // ---- POSTS ----
-
-    @GetMapping()
-    public ResponseEntity<List<Post>> index(
-            @RequestParam(defaultValue = "10") Integer limit,
-            @RequestParam(defaultValue = "1") Integer page) {
-
-        var result = posts.stream().skip((page - 1) * limit).limit(limit).toList();
-
-        return ResponseEntity.status(200).body(result);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Post> show(@PathVariable String id) {
-        var post = posts.stream()
-                .filter(p -> p.getTitle().equals(id))
-                .findFirst();
-
-        if (post.isPresent()) {
-            return ResponseEntity.status(200).body(post.get());
-        } else {
-            return ResponseEntity.status(404).build();
-        }
-    }
-
-    @PostMapping("")
-    public ResponseEntity<Post> create(@Valid @RequestBody Post post) {
-        posts.add(post);
-
-        return ResponseEntity.status(201).body(post);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Post> update(@PathVariable String id, @Valid @RequestBody Post data) {
-        var maybePost = posts.stream()
-                .filter(p -> p.getTitle().equals(id))
-                .findFirst();
-
-        if (maybePost.isPresent()) {
-            var post = maybePost.get();
-            post.setTitle(data.getTitle());
-            post.setAuthor(data.getAuthor());
-            post.setContent(data.getContent());
-            post.setCreatedAt(data.getCreatedAt());
-
-            return ResponseEntity.status(200).body(post);
-        } else {
-            return ResponseEntity.status(404).build();
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        boolean removed = posts.removeIf(p -> p.getTitle().equals(id));
-
-        if (removed) {
-            return ResponseEntity.status(204).build();
-        } else {
-            return ResponseEntity.status(404).build();
-        }
-    }
+//    // ---- POSTS ----
+//
+//    @GetMapping()
+//    public ResponseEntity<List<Post>> index(
+//            @RequestParam(defaultValue = "10") Integer limit,
+//            @RequestParam(defaultValue = "1") Integer page) {
+//
+//        var result = posts.stream().skip((page - 1) * limit).limit(limit).toList();
+//
+//        return ResponseEntity.status(200).body(result);
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Post> show(@PathVariable String id) {
+//        var post = posts.stream()
+//                .filter(p -> p.getTitle().equals(id))
+//                .findFirst();
+//
+//        if (post.isPresent()) {
+//            return ResponseEntity.status(200).body(post.get());
+//        } else {
+//            return ResponseEntity.status(404).build();
+//        }
+//    }
+//
+//    @PostMapping("")
+//    public ResponseEntity<Post> create(@Valid @RequestBody Post post) {
+//        posts.add(post);
+//
+//        return ResponseEntity.status(201).body(post);
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Post> update(@PathVariable String id, @Valid @RequestBody Post data) {
+//        var maybePost = posts.stream()
+//                .filter(p -> p.getTitle().equals(id))
+//                .findFirst();
+//
+//        if (maybePost.isPresent()) {
+//            var post = maybePost.get();
+//            post.setTitle(data.getTitle());
+//            post.setAuthor(data.getAuthor());
+//            post.setContent(data.getContent());
+//            post.setCreatedAt(data.getCreatedAt());
+//
+//            return ResponseEntity.status(200).body(post);
+//        } else {
+//            return ResponseEntity.status(404).build();
+//        }
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> delete(@PathVariable String id) {
+//        boolean removed = posts.removeIf(p -> p.getTitle().equals(id));
+//
+//        if (removed) {
+//            return ResponseEntity.status(204).build();
+//        } else {
+//            return ResponseEntity.status(404).build();
+//        }
+//    }
 }
