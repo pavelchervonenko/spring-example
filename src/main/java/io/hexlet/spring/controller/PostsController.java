@@ -1,9 +1,11 @@
 package io.hexlet.spring.controller;
 
+import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.model.Post;
 
 import io.hexlet.spring.repository.PostRepository;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,33 +30,28 @@ public class PostsController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Post show(@PathVariable Long id) {
-        var user = postRepository.findById(id).get();
-        return user;
+        var post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
+        return post;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post create(@RequestBody Post post) {
-        postRepository.save(post);
-        return post;
+    public Post create(@Valid @RequestBody Post post) {
+        return postRepository.save(post);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> update(@PathVariable("id") Long id,
+    public Post update(@PathVariable("id") Long id,
                                        @RequestBody Post data) {
-        var maybePost = postRepository.findById(id);
-        if (maybePost.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        var post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post " + id + " Not Found"));
 
-        var post = maybePost.get();
         post.setTitle(data.getTitle());
         post.setContent(data.getContent());
         post.setPublished(data.isPublished());
 
-        postRepository.save(post);
-
-        return ResponseEntity.ok(post);
+        return postRepository.save(post);
     }
 
     @DeleteMapping("/{id}")

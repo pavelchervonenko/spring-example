@@ -1,5 +1,7 @@
 package io.hexlet.spring.controller;
 
+import io.hexlet.spring.exception.ResourceNotFoundException;
+
 import io.hexlet.spring.model.User;
 
 import io.hexlet.spring.repository.UserRepository;
@@ -28,15 +30,15 @@ public class UsersController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User show(@PathVariable Long id) {
-        var user = userRepository.findById(id).get();
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
         return user;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody User user) {
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
     @PutMapping("/{id}")
