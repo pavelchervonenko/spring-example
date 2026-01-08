@@ -16,7 +16,7 @@ spring:
 
 output:
   ansi:
-    enabled: always                    # ✅ правильные отступы
+    enabled: always
 
 logging:
   pattern:

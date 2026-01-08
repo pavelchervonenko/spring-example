@@ -5,6 +5,7 @@ import io.hexlet.spring.model.Post;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
+@EnableJpaAuditing
 @RestController
 //@RequestMapping("/api/posts")
 public class Application {

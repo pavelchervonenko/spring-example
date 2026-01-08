@@ -2,10 +2,10 @@ package io.hexlet.spring.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,8 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "posts")
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Setter
 @Getter
@@ -34,4 +37,11 @@ public class Post {
     @NotBlank
     private String content;
     private boolean published;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }
