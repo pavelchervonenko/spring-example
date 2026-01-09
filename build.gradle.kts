@@ -26,6 +26,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    implementation("net.datafaker:datafaker:1.9.0")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
