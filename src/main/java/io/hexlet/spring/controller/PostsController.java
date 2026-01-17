@@ -26,7 +26,7 @@ public class PostsController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Post> getPublishedPosts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public List<Post> index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return postRepository.findByPublishedTrue(pageable);
     }
