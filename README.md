@@ -1,2 +1,3 @@
 [![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-dark.svg)](https://sonarcloud.io/summary/new_code?id=pavelchervonenko_spring-example)
+
 ![CI](https://github.com/pavelchervonenko/spring-example/actions/workflows/ci.yml/badge.svg)

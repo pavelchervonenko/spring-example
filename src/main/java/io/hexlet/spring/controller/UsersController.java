@@ -3,7 +3,7 @@ package io.hexlet.spring.controller;
 import io.hexlet.spring.exception.ResourceNotFoundException;
 
 import io.hexlet.spring.model.User;
-
+import io.hexlet.spring.dto.UserDTO;
 import io.hexlet.spring.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +20,33 @@ public class UsersController {
     @Autowired
     private UserRepository userRepository;
 
+    private UserDTO toDTO(User user) {
+        var dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        return dto;
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         var users = userRepository.findAll();
-        return users;
+
+        var result = users.stream()
+                .map(this::toDTO)
+                .toList();
+        return result;
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User show(@PathVariable Long id) {
+    public UserDTO show(@PathVariable Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
-        return user;
+
+        var result = toDTO(user);
+        return result;
     }
 
     @PostMapping

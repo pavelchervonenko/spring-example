@@ -1,10 +1,12 @@
 package io.hexlet.spring.controller;
 
+import io.hexlet.spring.dto.PostDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.model.Post;
 
 import io.hexlet.spring.repository.PostRepository;
 
+import io.hexlet.spring.util.PostMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,19 +26,30 @@ public class PostsController {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private PostMapper postMapper;
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Post> index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public List<PostDTO> index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return postRepository.findByPublishedTrue(pageable);
+        var posts =  postRepository.findByPublishedTrue(pageable);
+
+        var result = posts.stream()
+                .map(postMapper::toDTO)
+                .toList();
+        return result;
+
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Post show(@PathVariable Long id) {
+    public PostDTO show(@PathVariable Long id) {
         var post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
-        return post;
+
+        var result = postMapper.toDTO(post);
+        return result;
     }
 
     @PostMapping
