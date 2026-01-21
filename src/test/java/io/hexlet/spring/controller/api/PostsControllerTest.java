@@ -60,7 +60,6 @@ public class PostsControllerTest {
         var data = new HashMap<>();
         data.put("title", "meow");
         data.put("content", "bebebe");
-        data.put("published", true);
 
         var request = post("/api/posts")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -70,8 +69,7 @@ public class PostsControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.title").value("meow"))
-                .andExpect(jsonPath("$.content").value("bebebe"))
-                .andExpect(jsonPath("$.published").value(true));
+                .andExpect(jsonPath("$.content").value("bebebe"));
     }
 
     @Test
@@ -133,14 +131,12 @@ public class PostsControllerTest {
                 .ignore(Select.field(Post::getId))
                 .supply(Select.field(Post::getTitle), () -> faker.book().title())
                 .supply(Select.field(Post::getContent), () -> faker.lorem().paragraph())
-                .supply(Select.field(Post::isPublished), () -> true)
                 .create();
         postRepository.save(post);
 
         var data = new HashMap<>();
         data.put("title", "Mike");
         data.put("content", "Doe");
-        data.put("published", false);
 
         var request = put("/api/posts/" + post.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -152,7 +148,6 @@ public class PostsControllerTest {
         var updatedPost = postRepository.findById(post.getId()).get();
         assertThat(updatedPost.getTitle()).isEqualTo("Mike");
         assertThat(updatedPost.getContent()).isEqualTo("Doe");
-        assertThat(updatedPost.isPublished()).isFalse();
     }
 
     @Test

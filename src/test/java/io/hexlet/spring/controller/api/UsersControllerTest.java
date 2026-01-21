@@ -113,7 +113,7 @@ public class UsersControllerTest {
         var data = new HashMap<>();
         data.put("firstName", "Mike");
         data.put("lastName", "Doe");
-        data.put("email", "mike@example.com");
+        //data.put("email", "mike@example.com");
 
         var request = put("/api/users/" + user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +125,7 @@ public class UsersControllerTest {
         user = userRepository.findById(user.getId()).get();
         assertThat(user.getFirstName()).isEqualTo("Mike");
         assertThat(user.getLastName()).isEqualTo("Doe");
-        assertThat(user.getEmail()).isEqualTo("mike@example.com");
+        //assertThat(user.getEmail()).isEqualTo("mike@example.com");
     }
 
     @Test

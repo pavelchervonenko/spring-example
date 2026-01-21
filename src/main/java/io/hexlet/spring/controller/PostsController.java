@@ -1,12 +1,13 @@
 package io.hexlet.spring.controller;
 
+import io.hexlet.spring.dto.PostCreateDTO;
 import io.hexlet.spring.dto.PostDTO;
+import io.hexlet.spring.dto.PostUpdateDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
-import io.hexlet.spring.model.Post;
 
 import io.hexlet.spring.repository.PostRepository;
 
-import io.hexlet.spring.util.PostMapper;
+import io.hexlet.spring.mapper.PostMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,10 +35,9 @@ public class PostsController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         var posts =  postRepository.findByPublishedTrue(pageable);
 
-        var result = posts.stream()
-                .map(postMapper::toDTO)
+        return posts.stream()
+                .map(postMapper::map)
                 .toList();
-        return result;
 
     }
 
@@ -48,27 +47,27 @@ public class PostsController {
         var post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
 
-        var result = postMapper.toDTO(post);
-        return result;
+        return postMapper.map(post);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post create(@Valid @RequestBody Post post) {
-        return postRepository.save(post);
+    public PostDTO create(@Valid @RequestBody PostCreateDTO postData) {
+        var post = postMapper.map(postData);
+        postRepository.save(post);
+        return postMapper.map(post);
     }
 
     @PutMapping("/{id}")
-    public Post update(@PathVariable("id") Long id,
-                                       @RequestBody Post data) {
+    public PostDTO update(@PathVariable("id") Long id, @Valid @RequestBody PostUpdateDTO postData) {
         var post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post " + id + " Not Found"));
 
-        post.setTitle(data.getTitle());
-        post.setContent(data.getContent());
-        post.setPublished(data.isPublished());
+        postMapper.update(postData, post);
 
-        return postRepository.save(post);
+        postRepository.save(post);
+
+        return postMapper.map(post);
     }
 
     @DeleteMapping("/{id}")
