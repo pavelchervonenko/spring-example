@@ -1,11 +1,11 @@
 package io.hexlet.spring.controller;
 
 import io.hexlet.spring.dto.UserCreateDTO;
+import io.hexlet.spring.dto.UserPatchDTO;
 import io.hexlet.spring.dto.UserUpdateDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
 
 import io.hexlet.spring.mapper.UserMapper;
-import io.hexlet.spring.model.User;
 import io.hexlet.spring.dto.UserDTO;
 import io.hexlet.spring.repository.UserRepository;
 
@@ -26,21 +26,13 @@ public class UsersController {
     @Autowired
     private UserMapper userMapper;
 
-    private UserDTO toDTO(User user) {
-        var dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        return dto;
-    }
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
         var users = userRepository.findAll();
 
         return users.stream()
-                .map(userMapper::map)
+                .map(userMapper::toDTO)
                 .toList();
     }
 
@@ -50,15 +42,15 @@ public class UsersController {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
 
-        return userMapper.map(user);
+        return userMapper.toDTO(user);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Valid @RequestBody UserCreateDTO dto) {
-        var user = userMapper.map(dto);
+        var user = userMapper.toEntity(dto);
         userRepository.save(user);
-        return userMapper.map(user);
+        return userMapper.toDTO(user);
     }
 
     @PutMapping("/{id}")
@@ -66,9 +58,24 @@ public class UsersController {
                                        @Valid @RequestBody UserUpdateDTO dto) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id + " Not Found"));
-        userMapper.update(dto, user);
+        userMapper.updateEntityFromDTO(dto, user);
         userRepository.save(user);
-        return userMapper.map(user);
+        return userMapper.toDTO(user);
+    }
+
+    @PatchMapping("/{id}")
+    public UserDTO patch(
+            @PathVariable("id") Long id,
+            @RequestBody UserPatchDTO dto) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User " + id + " Not Found"));
+
+        dto.getFirstName().ifPresent(user::setFirstName);
+        dto.getLastName().ifPresent(user::setLastName);
+        dto.getEmail().ifPresent(user::setEmail);
+
+        userRepository.save(user);
+        return userMapper.toDTO(user);
     }
 
     @DeleteMapping("/{id}")

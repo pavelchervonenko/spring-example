@@ -3,6 +3,7 @@ package io.hexlet.spring.model;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -36,6 +39,7 @@ public class Post {
 
     @NotBlank
     private String content;
+
     private boolean published;
 
     @LastModifiedDate
