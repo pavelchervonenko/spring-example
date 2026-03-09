@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T17:11:41+0300",
+    date = "2026-03-08T20:07:43+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
-public class JsonNullableMapperImpl extends JsonNullableMapper {
+public class ReferenceMapperImpl extends ReferenceMapper {
 }

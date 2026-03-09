@@ -36,6 +36,9 @@ public class User {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Post> posts = new ArrayList<>();
+
     @Column(unique = true, nullable = false)
     @Email
     private String email;

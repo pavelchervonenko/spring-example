@@ -5,22 +5,18 @@ import io.hexlet.spring.dto.UserDTO;
 import io.hexlet.spring.dto.UserUpdateDTO;
 import io.hexlet.spring.model.User;
 import javax.annotation.processing.Generated;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-21T13:54:12+0300",
+    date = "2026-02-22T17:11:41+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
-public class UserMapperImpl extends UserMapper {
-
-    @Autowired
-    private JsonNullableMapper jsonNullableMapper;
+public class UserMapperImpl implements UserMapper {
 
     @Override
-    public User map(UserCreateDTO dto) {
+    public User toEntity(UserCreateDTO dto) {
         if ( dto == null ) {
             return null;
         }
@@ -35,32 +31,28 @@ public class UserMapperImpl extends UserMapper {
     }
 
     @Override
-    public UserDTO map(User model) {
-        if ( model == null ) {
+    public UserDTO toDTO(User post) {
+        if ( post == null ) {
             return null;
         }
 
         UserDTO userDTO = new UserDTO();
 
-        userDTO.setId( model.getId() );
-        userDTO.setEmail( model.getEmail() );
-        userDTO.setFirstName( model.getFirstName() );
-        userDTO.setLastName( model.getLastName() );
+        userDTO.setId( post.getId() );
+        userDTO.setEmail( post.getEmail() );
+        userDTO.setFirstName( post.getFirstName() );
+        userDTO.setLastName( post.getLastName() );
 
         return userDTO;
     }
 
     @Override
-    public void update(UserUpdateDTO dto, User model) {
+    public void updateEntityFromDTO(UserUpdateDTO dto, User post) {
         if ( dto == null ) {
             return;
         }
 
-        if ( jsonNullableMapper.isPresent( dto.getFirstName() ) ) {
-            model.setFirstName( jsonNullableMapper.unwrap( dto.getFirstName() ) );
-        }
-        if ( jsonNullableMapper.isPresent( dto.getLastName() ) ) {
-            model.setLastName( jsonNullableMapper.unwrap( dto.getLastName() ) );
-        }
+        post.setFirstName( dto.getFirstName() );
+        post.setLastName( dto.getLastName() );
     }
 }
