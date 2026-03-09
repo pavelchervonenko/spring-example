@@ -2,6 +2,7 @@ package io.hexlet.spring.controller;
 
 import io.hexlet.spring.dto.PostCreateDTO;
 import io.hexlet.spring.dto.PostDTO;
+import io.hexlet.spring.dto.PostParamsDTO;
 import io.hexlet.spring.dto.PostPatchDTO;
 import io.hexlet.spring.dto.PostUpdateDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.hexlet.spring.specification.PostSpecification;
+
 @RestController
 @RequestMapping("/api/posts")
 public class PostsController {
@@ -41,16 +44,20 @@ public class PostsController {
     @Autowired
     private PostMapper postMapper;
 
+    @Autowired
+    private PostSpecification specBuilder;
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PostDTO> index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        var posts =  postRepository.findByPublishedTrue(pageable);
+    public List<PostDTO> index(PostParamsDTO params, @RequestParam(defaultValue = "0") int page)
+    {
+        var spec = specBuilder.build(params);
+
+        var posts =  postRepository.findAll(spec, PageRequest.of(page, 10));
 
         return posts.stream()
                 .map(postMapper::toDTO)
                 .toList();
-
     }
 
     @GetMapping("/{id}")

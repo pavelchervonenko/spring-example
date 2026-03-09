@@ -162,20 +162,33 @@ public class PostsControllerTest {
     public void testIndex() throws Exception {
         var user = createAndSaveUser();
 
-        for (int i = 0; i < 3; i++) {
-            createAndSavePost(user, true);
-        }
+        var post = Instancio.of(Post.class)
+                .ignore(Select.field(Post::getId))
+                .ignore(Select.field(Post::getUser))
+                .ignore(Select.field(Post::getTags))
+                .set(Select.field(Post::getTitle), "Java Spring")
+                .set(Select.field(Post::isPublished), true)
+                .supply(Select.field(Post::getContent), () -> faker.lorem().paragraph())
+                .create();
+        post.setUser(user);
+        postRepository.save(post);
 
-        createAndSavePost(user, false);
+        var secondPost = createAndSavePost(user, true);
 
-        var result = mockMvc.perform(get("/api/posts")
-                .param("page", "0")
-                .param("size", "5"))
+        System.out.println("First post title: " + post.getTitle());
+        System.out.println("Second post title: " + secondPost.getTitle());
+
+        // Проверим, сколько постов в БД
+        var allPosts = postRepository.findAll();
+        System.out.println("Total posts in DB: " + allPosts.size());
+        allPosts.forEach(p -> System.out.println(" - " + p.getTitle()));
+
+        mockMvc.perform(get("/api/posts")
+                        .param("titleCont", "Java"))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        var response = result.getResponse().getContentAsString();
-        assertThatJson(response).isArray().hasSize(3);
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].title").value("Java Spring"));
     }
 
     @Test
