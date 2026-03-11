@@ -12,6 +12,7 @@ import io.hexlet.spring.model.User;
 
 public interface UserMapper {
     User toEntity(UserCreateDTO dto);
+    User toEntity(UserDTO dto);
     UserDTO toDTO(User post);
     void updateEntityFromDTO(UserUpdateDTO dto, @MappingTarget User post);
 }

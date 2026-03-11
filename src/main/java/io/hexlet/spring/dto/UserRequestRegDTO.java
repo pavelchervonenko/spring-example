@@ -9,17 +9,13 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class UserCreateDTO {
-    @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
-
+public class UserRequestRegDTO {
     @Column(unique = true, nullable = false)
-    @Email
-    private String email;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    private String username;
 
-    @Size(min = 3, max = 100)
-    private String passwordDigest;
+    @NotBlank(message = "Password is required")
+    @Size(min = 3, message = "Password must be at least 3 characters")
+    private String password;
 }

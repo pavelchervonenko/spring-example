@@ -1,6 +1,5 @@
 package io.hexlet.spring.dto;
 
-import io.hexlet.spring.model.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
